@@ -14,11 +14,12 @@ rad = 40
 grav = 2000
 
 speed = np.array([0.0,0.0])
-max_speed = np.array([300,300])
-acc = np.array([2100,2100])
-dec = np.array([600,600])
-fact = acc/max_speed
-decFact = dec/max_speed
+acc = np.array([2100,2100,2100,2100])
+direction = np.array([0,0,0,0])
+nat = np.array([0,0,0,0])
+resistance = 7
+
+mask = np.array([[-1,0],[1,0],[0,-1],[0,1]])
 
 while running:
     # poll for events
@@ -31,33 +32,35 @@ while running:
     screen.fill("white")
 
     pygame.draw.circle(screen, "red", player_pos, rad)
-    
+
+    direction = np.array([0,0,0,0])
+    nat = np.array([0,0,0,0])
+
     if player_pos.y < height - rad:
-        speed[1] -= grav*dt
+        nat[3] = grav
+
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_z]:
+        direction[2] = 1
+    if keys[pygame.K_s]:
+        direction[3] = 1
+    if keys[pygame.K_q]:
+        direction[0] = 1
+    if keys[pygame.K_d]:
+        direction[1] = 1
+    
+    F = np.dot((direction * acc), mask)
+    C = np.dot(nat,mask)
+    R = resistance*speed
+
+    speed += (F + C - R)*dt
+
     if player_pos.y > height - rad:
         player_pos.y = height - rad
         speed[1] = 0
 
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_z]:
-        speed[1] += (-fact[1]*speed[1] + acc[1])*dt
-    else:
-        speed[1] -= speed[1]*decFact[1]*dt
-    if keys[pygame.K_s]:
-        speed[1] -= (fact[1]*speed[1] + acc[1])*dt
-    else:
-        speed[1] -= speed[1]*decFact[1]*dt
-    if keys[pygame.K_q]:
-        speed[0] += (-fact[0]*speed[0] + acc[0])*dt
-    else:
-        speed[0] -= speed[0]*decFact[0]*dt
-    if keys[pygame.K_d]:
-        speed[0] -= (fact[0]*speed[0] + acc[0])*dt
-    else:
-        speed[0] -= speed[0]*decFact[0]*dt
-
-    player_pos.x -= speed[0] * dt
-    player_pos.y -= speed[1] * dt
+    player_pos.x += speed[0] * dt
+    player_pos.y += speed[1] * dt
     # flip() the display to put your work on screen
     pygame.display.flip()
 
