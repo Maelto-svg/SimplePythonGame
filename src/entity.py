@@ -16,7 +16,11 @@ class Entity(Element):
         C = np.dot(constraint,self.mask)
         R = resistance*self.speed
 
-        self.speed += (F + C - R)*time
+        for i in range(2):
+            if abs(R[i]*time) > abs(self.speed[i] + (F[i]+C[i])*time):
+                self.speed[i] = 0
+            else:
+                self.speed[i] += (F[i] + C[i] - R[i])*time
 
     def moveLeft(self):
         pass
