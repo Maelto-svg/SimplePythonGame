@@ -11,15 +11,16 @@ dt = 0
 
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 rad = 40
-grav = 2000
+grav = 8000
 
 speed = np.array([0.0,0.0])
-acc = np.array([2100,2100,2100,2100])
-direction = np.array([0,0,0,0])
+acc = np.array([5000,5000,5e4,8000])
+direction = np.array([0.0,0.0,0.0,0.0])
 nat = np.array([0,0,0,0])
 resistance = 7
 
 mask = np.array([[-1,0],[1,0],[0,-1],[0,1]])
+cont = 0
 
 while running:
     # poll for events
@@ -33,16 +34,22 @@ while running:
 
     pygame.draw.circle(screen, "red", player_pos, rad)
 
-    direction = np.array([0,0,0,0])
+    direction = np.array([0.0,0.0,0.0,0.0])
     nat = np.array([0,0,0,0])
 
     if player_pos.y < height - rad:
         nat[3] = grav
 
     keys = pygame.key.get_pressed()
-    if keys[pygame.K_z]:
-        direction[2] = 1
-    if keys[pygame.K_s]:
+    if cont == 10:
+        cont = 0
+    elif keys[pygame.K_SPACE] and (player_pos.y == height - rad or cont):
+        direction[2] = 1-cont*0.1
+        cont += 1
+        print(direction[2])
+    else:
+        cont = 0
+    if keys[pygame.K_LSHIFT]:
         direction[3] = 1
     if keys[pygame.K_q]:
         direction[0] = 1
@@ -68,6 +75,6 @@ while running:
     # dt is delta time in seconds since last frame, used for framerate-
     # independent physics.
     dt = clock.tick(60) / 1000
-    print(f"speed = {speed}, x={player_pos.x}, y={player_pos.y}")
+    #print(f"speed = {speed}, x={player_pos.x}, y={player_pos.y}")
 
 pygame.quit()
