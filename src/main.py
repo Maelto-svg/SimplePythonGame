@@ -17,7 +17,7 @@ player_pos = (screen.get_width() / 2, screen.get_height() / 2)
 
 speed = np.array([0.0,0.0])
 acc = np.array([5000,5000,5e4,8000])
-sprite = None
+sprite = pygame.image.load("ressources/sprites/resized_player.png")
 rad = 40
 
 p1 = Player(player_pos[0],player_pos[1], sprite, speed, acc)
@@ -37,7 +37,7 @@ while running:
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("white")
 
-    pygame.draw.circle(screen, "red", [p1.x, p1.y], rad)
+    screen.blit(sprite, [p1.x, p1.y])
 
     p1.direction = np.array([0.0,0.0,0.0,0.0])
 
