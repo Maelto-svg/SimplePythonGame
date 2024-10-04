@@ -16,7 +16,7 @@ if __name__ == "__main__":
     else:
         input_image = sys.argv[1]
         
-        output_image = f"resized_{input_image}"
+        output_image = f"ressources/sprites/resized_{input_image}"
         
         if len(sys.argv) > 2:
             output_image = sys.argv[2]
@@ -24,4 +24,4 @@ if __name__ == "__main__":
         width = int(sys.argv[3]) if len(sys.argv) > 3 else 64
         height = int(sys.argv[4]) if len(sys.argv) > 4 else 64
         
-        resize_image(input_image, output_image, width, height)
+        resize_image(f"ressources/sprites/{input_image}", output_image, width, height)
