@@ -3,7 +3,7 @@ import numpy as np
 from player import Player
 
 def isOnGround(ent):
-    ent.onGround = ent.y >= height - rad
+    ent.onGround = ent.rect.bottom >= height
 
 # pygame setup
 pygame.init()
@@ -18,7 +18,6 @@ player_pos = (screen.get_width() / 2, screen.get_height() / 2)
 speed = np.array([0.0,0.0])
 acc = np.array([5000,5000,5e4,8000])
 sprite = pygame.image.load("ressources/sprites/resized_player.png")
-rad = 40
 
 p1 = Player(player_pos[0],player_pos[1], sprite, speed, acc)
 
@@ -37,7 +36,7 @@ while running:
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("white")
 
-    screen.blit(sprite, [p1.x, p1.y])
+    screen.blit(p1.sprite, p1.rect)
 
     p1.direction = np.array([0.0,0.0,0.0,0.0])
 
@@ -65,13 +64,13 @@ while running:
     isOnGround(p1)
 
     if p1.onGround:
-        p1.y = height - rad
+        p1.rect.bottom = height
         speed[1] = 0
         p1.onGround = True
 
     # flip() the display to put your work on screen
     pygame.display.flip()
-    print(f"x={p1.x}, y={p1.y}, vit={p1.speed}")
+    #print(f"x={p1.x}, y={p1.y}, vit={p1.speed}")
     # limits FPS to 60
     # dt is delta time in seconds since last frame, used for framerate-
     # independent physics.
