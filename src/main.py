@@ -16,7 +16,7 @@ dt = 0
 player_pos = (screen.get_width() / 2, screen.get_height() / 2)
 
 speed = np.array([0.0,0.0])
-acc = np.array([5000,5000,5e4,8000])
+acc = np.array([5000,5000,3e4,8000]) #Left, Right, Up, Down
 sprite = pygame.image.load("ressources/sprites/resized_player.png")
 
 p1 = Player(player_pos[0],player_pos[1], sprite, speed, acc)
@@ -24,7 +24,15 @@ p1 = Player(player_pos[0],player_pos[1], sprite, speed, acc)
 grav = 8000
 
 nat = np.array([0,0,0,0])
-resistance = 7
+
+ground_resistance = 7
+air_resistance = .5
+
+ground_push = [1, 1]
+air_push = [0.2, 1]
+
+resistance = [ground_resistance, air_resistance]
+push = [ground_push, air_push]
 
 while running:
     # poll for events
@@ -57,7 +65,7 @@ while running:
     if keys[pygame.K_d]:
         p1.moveRight()
 
-    p1.varSpeed(nat, resistance, dt)
+    p1.varSpeed(nat, resistance, push, dt)
 
     p1.move(speed[0]*dt, speed[1]*dt)
 
