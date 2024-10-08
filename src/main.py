@@ -24,7 +24,7 @@ def Collision(ent):
 
         bouncing_dir = np.argmin(over)
 
-        speed[bouncing_dir//2] = 0
+        ent.speed[bouncing_dir//2] = 0
         if bouncing_dir == 0:
             ent.rect.right = pl.rect.left
         elif bouncing_dir == 1:
@@ -36,6 +36,15 @@ def Collision(ent):
         ent.onGround = bouncing_dir == 2
     else:
         ent.onGround = False
+    
+    if ent.rect.left < 0 or ent.rect.right > width:
+        ent.speed[0] = 0
+        ent.rect.left = max(0, ent.rect.left)
+        ent.rect.right = min(width, ent.rect.right)
+    if ent.rect.bottom > height:
+        ent.speed[1] = 0
+        ent.rect.bottom = height
+        ent.onGround = True
 
 # pygame setup
 pygame.init()
