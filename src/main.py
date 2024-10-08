@@ -1,9 +1,41 @@
 import pygame
 import numpy as np
 from player import Player
+from platform import Platform
 
-def isOnGround(ent):
-    ent.onGround = ent.rect.bottom >= height
+
+def Collision(ent):
+    p = ent.rect.collidelist(plats)
+    if p!= -1:
+        pl = plats[p]
+        tab_ent = np.array([
+                ent.rect.right,
+                ent.rect.left,
+                ent.rect.bottom,
+                ent.rect.top
+                ])
+        tab_plat = np.array([
+                pl.rect.left,
+                pl.rect.right,
+                pl.rect.top,
+                pl.rect.bottom
+                ])
+        over = (tab_ent - tab_plat) * np.array([1,-1,1,-1])
+
+        bouncing_dir = np.argmin(over)
+
+        speed[bouncing_dir//2] = 0
+        if bouncing_dir == 0:
+            ent.rect.right = pl.rect.left
+        elif bouncing_dir == 1:
+            ent.rect.left = pl.rect.right
+        elif bouncing_dir == 2:
+            ent.rect.bottom = pl.rect.top
+        elif bouncing_dir == 3:
+            ent.rect.top = pl.rect.bottom
+        ent.onGround = bouncing_dir == 2
+    else:
+        ent.onGround = False
 
 # pygame setup
 pygame.init()
@@ -12,6 +44,13 @@ screen = pygame.display.set_mode((width, height))
 clock = pygame.time.Clock()
 running = True
 dt = 0
+
+
+sprite_plat = pygame.image.load("ressources/sprites/placeHolder.png")
+plat1 = Platform(0, 670, sprite_plat, dim=[1280, 50])
+plat2 = Platform(960, 470, sprite_plat, dim=[200,200])
+
+plats = [plat1, plat2]
 
 player_pos = (screen.get_width() / 2, screen.get_height() / 2)
 
@@ -25,7 +64,7 @@ grav = 8000
 
 nat = np.array([0,0,0,0])
 
-ground_resistance = 7
+ground_resistance = 10
 air_resistance = .5
 
 ground_push = [1, 1]
@@ -33,6 +72,7 @@ air_push = [0.2, 1]
 
 resistance = [ground_resistance, air_resistance]
 push = [ground_push, air_push]
+
 
 while running:
     # poll for events
@@ -45,6 +85,9 @@ while running:
     screen.fill("white")
 
     screen.blit(p1.sprite, p1.rect)
+    screen.blit(plat1.sprite, plat1.rect)
+    screen.blit(plat2.sprite, plat2.rect)
+
 
     p1.direction = np.array([0.0,0.0,0.0,0.0])
 
@@ -69,12 +112,7 @@ while running:
 
     p1.move(speed[0]*dt, speed[1]*dt)
 
-    isOnGround(p1)
-
-    if p1.onGround:
-        p1.rect.bottom = height
-        speed[1] = 0
-        p1.onGround = True
+    Collision(p1)
 
     # flip() the display to put your work on screen
     pygame.display.flip()
