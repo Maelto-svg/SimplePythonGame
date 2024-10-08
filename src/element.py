@@ -5,6 +5,7 @@ class Element:
     def __init__(self, x, y, sprite):
         self.sprite = sprite
         self.rect = self.sprite.get_rect()
+        self.move(x,y)
 
     def move(self, vx, vy):
         self.rect = self.rect.move(vx, vy)
