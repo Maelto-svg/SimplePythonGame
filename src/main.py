@@ -3,10 +3,9 @@ import numpy as np
 from scene import Scene
 
 def Collision(ent):
-    plats = [e for e in sceen.elements if e.__class__.__name__ == "Platform"]
-    p = ent.rect.collidelist(plats)
+    p = ent.rect.collidelist(sceen.plats)
     if p!= -1:
-        pl = plats[p]
+        pl = sceen.plats[p]
         tab_ent = np.array([
                 ent.rect.right,
                 ent.rect.left,
@@ -58,7 +57,7 @@ sceen = Scene(width, height)
 
 sceen.load("ressources/scenes/start.json", 0)
 
-p1 = [e for e in sceen.elements if e.__class__.__name__ == "Player"][0]
+p1 = sceen.player
 
 # physics setup
 grav = 8000

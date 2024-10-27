@@ -9,6 +9,8 @@ class Scene:
 
     def __init__(self, width, height):
         self.elements = []
+        self.player = None
+        self.plats = None
         self.width = width
         self.height = height
 
@@ -29,7 +31,7 @@ class Scene:
             sprite = self.resize(sprite, e["size"])
             if e["class"] == "Player":
                 e["args"] = data["player_spawn"][entry] + e["args"] 
-            print(e["args"], e["class"])
             self.elements.append(globals()[e["class"]](*e["args"], sprite))
-        
+        self.player = [e for e in self.elements if e.__class__.__name__ == "Player"][0]
+        self.plats = [e for e in self.elements if e.__class__.__name__ == "Platform"]
         
