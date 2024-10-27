@@ -32,9 +32,9 @@ def Collision(ent):
             ent.rect.bottom = pl.rect.top
             push = pl.push
             resistance = pl.resist
-            ent.onGround = True
         elif bouncing_dir == 3:
             ent.rect.top = pl.rect.bottom
+        ent.onGround = bouncing_dir == 2
     else:
         ent.onGround = False
     
