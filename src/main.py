@@ -1,10 +1,9 @@
 import pygame
 import numpy as np
-from player import Player
-from platform import Platform
-
+from scene import Scene
 
 def Collision(ent):
+    plats = [e for e in sceen.elements if e.__class__.__name__ == "Platform"]
     p = ent.rect.collidelist(plats)
     if p!= -1:
         pl = plats[p]
@@ -54,21 +53,14 @@ clock = pygame.time.Clock()
 running = True
 dt = 0
 
+# sceen setup
+sceen = Scene(width, height)
 
-sprite_plat = pygame.image.load("ressources/sprites/placeHolder.png")
-plat1 = Platform(0, 670, sprite_plat, dim=[1280, 50])
-plat2 = Platform(960, 470, sprite_plat, dim=[200,200])
+sceen.load("ressources/scenes/start.json", 0)
 
-plats = [plat1, plat2]
+p1 = [e for e in sceen.elements if e.__class__.__name__ == "Player"][0]
 
-player_pos = (screen.get_width() / 2, screen.get_height() / 2)
-
-speed = np.array([0.0,0.0])
-acc = np.array([5000,5000,3e4,8000]) #Left, Right, Up, Down
-sprite = pygame.image.load("ressources/sprites/resized_player.png")
-
-p1 = Player(player_pos[0],player_pos[1], sprite, speed, acc)
-
+# physics setup
 grav = 8000
 
 nat = np.array([0,0,0,0])
@@ -93,9 +85,8 @@ while running:
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("white")
 
-    screen.blit(p1.sprite, p1.rect)
-    screen.blit(plat1.sprite, plat1.rect)
-    screen.blit(plat2.sprite, plat2.rect)
+    for e in sceen.elements:
+        screen.blit(e.sprite, e.rect)
 
 
     p1.direction = np.array([0.0,0.0,0.0,0.0])
@@ -119,7 +110,7 @@ while running:
 
     p1.varSpeed(nat, resistance, push, dt)
 
-    p1.move(speed[0]*dt, speed[1]*dt)
+    p1.move(p1.speed[0]*dt, p1.speed[1]*dt)
 
     Collision(p1)
 

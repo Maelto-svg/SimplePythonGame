@@ -6,8 +6,8 @@ class Entity(Element):
 
     def __init__(self, x,y, sprite, speed, acc):
         super().__init__(x,y,sprite)
-        self.speed = speed
-        self.acc = acc
+        self.speed = np.array(speed)
+        self.acc = np.array(acc)
         self.direction = np.array([0.0,0.0,0.0,0.0])
         self.onGround = False
         self.orient = 1

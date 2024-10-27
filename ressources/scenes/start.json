@@ -1,0 +1,59 @@
+{
+    "content": [
+        {
+            "class": "Element",
+            "sprite": "ressources/sprites/background1.jpg",
+            "size": "full",
+            "args": [
+                0,
+                0
+            ],
+            "depth": 0
+        },
+        {
+            "class": "Platform",
+            "sprite": "ressources/sprites/placeholder.png",
+            "size": "1280x50",
+            "args": [
+                0,
+                670
+            ],
+            "depth": 1
+        },
+        {
+            "class": "Platform",
+            "sprite": "ressources/sprites/placeholder.png",
+            "size": "200x200",
+            "args": [
+                960,
+                470
+            ],
+            "depth": 1
+        },
+        {
+            "class": "Player",
+            "sprite": "ressources/sprites/resized_player.png",
+            "size": "64x64",
+            "args": [
+                [
+                    0.0,
+                    0.0
+                ],
+                [
+                    5000,
+                    5000,
+                    3e4,
+                    8000
+                ]
+            ],
+            "depth": 2
+        }
+    ],
+    "player_spawn": [
+        [
+            640,
+            320
+        ]
+    ],
+    "exits": []
+}
