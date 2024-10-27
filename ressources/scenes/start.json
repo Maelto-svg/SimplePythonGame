@@ -16,7 +16,9 @@
             "size": "1280x50",
             "args": [
                 0,
-                670
+                670,
+                [1, 1],
+                10
             ],
             "depth": 1
         },
@@ -26,7 +28,21 @@
             "size": "200x200",
             "args": [
                 960,
-                470
+                470,
+                [1, 1],
+                10
+            ],
+            "depth": 1
+        },
+        {
+            "class": "Environnement",
+            "sprite": "ressources/sprites/empty.png",
+            "size": "full",
+            "args": [
+                960,
+                470,
+                [0.2, 1],
+                0.5
             ],
             "depth": 1
         },
@@ -55,5 +71,6 @@
             320
         ]
     ],
-    "exits": []
+    "exits": [],
+    "grav": 8000
 }

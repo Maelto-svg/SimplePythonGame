@@ -3,6 +3,7 @@ import numpy as np
 from scene import Scene
 
 def Collision(ent):
+    global push, resistance
     p = ent.rect.collidelist(sceen.plats)
     if p!= -1:
         pl = sceen.plats[p]
@@ -29,9 +30,11 @@ def Collision(ent):
             ent.rect.left = pl.rect.right
         elif bouncing_dir == 2:
             ent.rect.bottom = pl.rect.top
+            push = pl.push
+            resistance = pl.resist
+            ent.onGround = True
         elif bouncing_dir == 3:
             ent.rect.top = pl.rect.bottom
-        ent.onGround = bouncing_dir == 2
     else:
         ent.onGround = False
     
@@ -43,6 +46,15 @@ def Collision(ent):
         ent.speed[1] = 0
         ent.rect.bottom = height
         ent.onGround = True
+        push = pl.push
+        resistance = pl.resist
+
+def env(ent):
+    global push, resistance
+    p = ent.rect.collidelist(sceen.env)
+    e = sceen.env[p]
+    push = e.push
+    resistance = e.resist
 
 # pygame setup
 pygame.init()
@@ -60,18 +72,11 @@ sceen.load("ressources/scenes/start.json", 0)
 p1 = sceen.player
 
 # physics setup
-grav = 8000
 
 nat = np.array([0,0,0,0])
 
-ground_resistance = 10
-air_resistance = .5
-
-ground_push = [1, 1]
-air_push = [0.2, 1]
-
-resistance = [ground_resistance, air_resistance]
-push = [ground_push, air_push]
+resistance = 1
+push = [1, 1]
 
 
 while running:
@@ -86,14 +91,14 @@ while running:
 
     for e in sceen.elements:
         screen.blit(e.sprite, e.rect)
-
-
+        
     p1.direction = np.array([0.0,0.0,0.0,0.0])
 
     nat = np.array([0,0,0,0])
 
     if not p1.onGround:
-        nat[3] = grav
+        nat[3] = sceen.grav
+        env(p1)
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_SPACE]:

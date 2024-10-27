@@ -13,9 +13,9 @@ class Entity(Element):
         self.orient = 1
 
     def varSpeed(self, constraint, resistance, push, time):
-        F = np.dot((self.direction * self.acc), self.mask) * push[0 if self.onGround else 1]
+        F = np.dot((self.direction * self.acc), self.mask) * push
         C = np.dot(constraint,self.mask)
-        R = resistance[0 if self.onGround else 1]*self.speed
+        R = resistance*self.speed
         old = self.speed.copy()
         for i in range(2):
             if abs(R[i]*time) > abs(self.speed[i] + (F[i]+C[i])*time):

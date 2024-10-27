@@ -3,12 +3,14 @@ from entity import Entity
 from Platform import Platform
 from element import Element
 from player import Player
+from environnement import Environnement
 import pygame
 
 class Scene:
 
     def __init__(self, width, height):
         self.elements = []
+        self.grav = 0
         self.player = None
         self.plats = None
         self.width = width
@@ -34,4 +36,5 @@ class Scene:
             self.elements.append(globals()[e["class"]](*e["args"], sprite))
         self.player = [e for e in self.elements if e.__class__.__name__ == "Player"][0]
         self.plats = [e for e in self.elements if e.__class__.__name__ == "Platform"]
-        
+        self.env = [e for e in self.elements if e.__class__.__name__ == "Environnement"]
+        self.grav = data["grav"]
