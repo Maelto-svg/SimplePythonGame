@@ -4,39 +4,39 @@ from scene import Scene
 
 def Collision(ent):
     global push, resistance
-    p = ent.rect.collidelist(sceen.plats)
-    if p!= -1:
-        pl = sceen.plats[p]
-        tab_ent = np.array([
-                ent.rect.right,
-                ent.rect.left,
-                ent.rect.bottom,
-                ent.rect.top
-                ])
-        tab_plat = np.array([
-                pl.rect.left,
-                pl.rect.right,
-                pl.rect.top,
-                pl.rect.bottom
-                ])
-        over = (tab_ent - tab_plat) * np.array([1,-1,1,-1])
+    temp_ground = False
+    for p in sceen.plats:
+        if ent.rect.colliderect(p):
+            tab_ent = np.array([
+                    ent.rect.right,
+                    ent.rect.left,
+                    ent.rect.bottom,
+                    ent.rect.top
+                    ])
+            tab_plat = np.array([
+                    p.rect.left,
+                    p.rect.right,
+                    p.rect.top,
+                    p.rect.bottom
+                    ])
+            over = (tab_ent - tab_plat) * np.array([1,-1,1,-1])
 
-        bouncing_dir = np.argmin(over)
+            bouncing_dir = np.argmin(over)
 
-        ent.speed[bouncing_dir//2] = 0
-        if bouncing_dir == 0:
-            ent.rect.right = pl.rect.left
-        elif bouncing_dir == 1:
-            ent.rect.left = pl.rect.right
-        elif bouncing_dir == 2:
-            ent.rect.bottom = pl.rect.top
-            push = pl.push
-            resistance = pl.resist
-        elif bouncing_dir == 3:
-            ent.rect.top = pl.rect.bottom
-        ent.onGround = bouncing_dir == 2
-    else:
-        ent.onGround = False
+            ent.speed[bouncing_dir//2] = 0
+            if bouncing_dir == 0:
+                ent.rect.right = p.rect.left
+            elif bouncing_dir == 1:
+                ent.rect.left = p.rect.right
+            elif bouncing_dir == 2:
+                ent.rect.bottom = p.rect.top
+                push = [push[i] + p.push[i] for i in range(len(push))]
+                resistance += p.resist
+            elif bouncing_dir == 3:
+                ent.rect.top = p.rect.bottom
+            temp_ground = bouncing_dir == 2 or temp_ground
+
+    ent.onGround = temp_ground
     
     if ent.rect.left < 0 or ent.rect.right > width:
         ent.speed[0] = 0
@@ -46,15 +46,14 @@ def Collision(ent):
         ent.speed[1] = 0
         ent.rect.bottom = height
         ent.onGround = True
-        push = pl.push
-        resistance = pl.resist
+
 
 def env(ent):
     global push, resistance
     p = ent.rect.collidelist(sceen.env)
     e = sceen.env[p]
-    push = e.push
-    resistance = e.resist
+    push = [push[i] + e.push[i] for i in range(len(push))]
+    resistance += e.resist
 
 # pygame setup
 pygame.init()
@@ -95,10 +94,9 @@ while running:
     p1.direction = np.array([0.0,0.0,0.0,0.0])
 
     nat = np.array([0,0,0,0])
+    nat[3] = sceen.grav
 
-    if not p1.onGround:
-        nat[3] = sceen.grav
-        env(p1)
+    env(p1)
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_SPACE]:
@@ -115,6 +113,9 @@ while running:
     p1.varSpeed(nat, resistance, push, dt)
 
     p1.move(p1.speed[0]*dt, p1.speed[1]*dt)
+
+    resistance = 0
+    push = [0, 0]
 
     Collision(p1)
 
