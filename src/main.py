@@ -19,7 +19,15 @@ def Collision(ent):
                     p.rect.top,
                     p.rect.bottom
                     ])
-            over = (tab_ent - tab_plat) * np.array([1,-1,1,-1])
+            over = (tab_ent - tab_plat) * np.array([1.0,-1.0,1.0,-1.0])
+            if ent.speed[0] >= 0:
+                over[1] = np.inf
+            else:
+                over[0] = np.inf
+            if ent.speed[1] >= 0:
+                over[3] = np.inf
+            else:
+                over[2] = np.inf
 
             bouncing_dir = np.argmin(over)
 
@@ -57,8 +65,9 @@ def env(ent):
 
 # pygame setup
 pygame.init()
-height, width = 720, 1280
-screen = pygame.display.set_mode((width, height))
+height, width = 720, 1080
+flags = pygame.FULLSCREEN | pygame.SCALED
+screen = pygame.display.set_mode((width, height),)
 clock = pygame.time.Clock()
 running = True
 dt = 0
@@ -87,7 +96,6 @@ while running:
 
     # fill the screen with a color to wipe away anything from last frame
     screen.fill("white")
-
     for e in sceen.elements:
         screen.blit(e.sprite, e.rect)
         
