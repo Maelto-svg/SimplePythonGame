@@ -1,10 +1,7 @@
 import json
-from entity import Entity
-from Platform import Platform
-from element import Element
-from player import Player
-from environnement import Environnement
+import importlib
 import pygame
+
 
 class Scene:
 
@@ -23,17 +20,34 @@ class Scene:
             dim = [int(i) for i in size.split("x")]
         return pygame.transform.scale(sprite, dim)
 
+    # TODO Move the loading mechanism elsewhere
+    def load_class(self, class_name, module_name):
+        """
+        Dynamically loads a class from a given module.
+        """
+        module = importlib.import_module(module_name)
+        return getattr(module, class_name)
+
     def load(self, file, entry):
-        with open(file,'r') as f:
+        with open(file, 'r') as f:
             data = json.load(f)
         content = sorted(data["content"], key=lambda x: x["depth"])
         self.elements = []
         for e in content:
+            # Dynamically import the class and create an instance
+            instance_type = e["class"].split(".")
+            class_name = instance_type[1]
+            module_name = instance_type[0]
+            Class = self.load_class(class_name, module_name)
+
             sprite = pygame.image.load(e["sprite"])
             sprite = self.resize(sprite, e["size"])
-            if e["class"] == "Player":
-                e["args"] = data["player_spawn"][entry] + e["args"] 
-            self.elements.append(globals()[e["class"]](*e["args"], sprite))
+
+            if class_name == "Player":
+                e["args"] = data["player_spawn"][entry] + e["args"]
+
+            self.elements.append(Class(*e["args"], sprite))
+
         self.player = [e for e in self.elements if e.__class__.__name__ == "Player"][0]
         self.plats = [e for e in self.elements if e.__class__.__name__ == "Platform"]
         self.env = [e for e in self.elements if e.__class__.__name__ == "Environnement"]

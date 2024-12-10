@@ -1,0 +1,30 @@
+[flake8]
+max-line-length = 128
+
+exclude =  
+    .git,
+    __pycache__,
+    .venv,
+    logs,
+    # Not an actual part of the game
+    utils,
+    # No code should be here
+    ressources
+
+# Ignore specific error codes
+ignore =
+    E123 # closing bracket does not match indentation of opening bracket's line
+    E126 # continuation line over-indented for hanging indent
+
+# Same as Ignore but for specific files only, none for now
+per-file-ignores =
+
+
+filename =
+    *.py
+
+enable-extensions =
+    G   # Enable Flake8-logging-format checks
+
+format = %(code)s - %(text)s in %(path)s at line %(row)d
+# Exemple output : E302 - expected 2 blank lines, found 1 in .\src\Platform.py at line 3

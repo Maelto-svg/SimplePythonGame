@@ -2,6 +2,7 @@ import pygame
 import numpy as np
 from scene import Scene
 
+
 def Collision(ent):
     global push, resistance
     temp_ground = False
@@ -19,7 +20,7 @@ def Collision(ent):
                     p.rect.top,
                     p.rect.bottom
                     ])
-            over = (tab_ent - tab_plat) * np.array([1.0,-1.0,1.0,-1.0])
+            over = (tab_ent - tab_plat) * np.array([1.0, -1.0, 1.0, -1.0])
             if ent.speed[0] >= 0:
                 over[1] = np.inf
             else:
@@ -31,7 +32,7 @@ def Collision(ent):
 
             bouncing_dir = np.argmin(over)
 
-            ent.speed[bouncing_dir//2] = 0
+            ent.speed[bouncing_dir // 2] = 0
             if bouncing_dir == 0:
                 ent.rect.right = p.rect.left
             elif bouncing_dir == 1:
@@ -45,7 +46,7 @@ def Collision(ent):
             temp_ground = bouncing_dir == 2 or temp_ground
 
     ent.onGround = temp_ground
-    
+
     if ent.rect.left < 0 or ent.rect.right > width:
         ent.speed[0] = 0
         ent.rect.left = max(0, ent.rect.left)
@@ -62,6 +63,7 @@ def env(ent):
     e = sceen.env[p]
     push = [push[i] + e.push[i] for i in range(len(push))]
     resistance += e.resist
+
 
 # pygame setup
 pygame.init()
@@ -81,7 +83,7 @@ p1 = sceen.player
 
 # physics setup
 
-nat = np.array([0,0,0,0])
+nat = np.array([0, 0, 0, 0])
 
 resistance = 1
 push = [1, 1]
@@ -98,10 +100,10 @@ while running:
     screen.fill("white")
     for e in sceen.elements:
         screen.blit(e.sprite, e.rect)
-        
-    p1.direction = np.array([0.0,0.0,0.0,0.0])
 
-    nat = np.array([0,0,0,0])
+    p1.direction = np.array([0.0, 0.0, 0.0, 0.0])
+
+    nat = np.array([0, 0, 0, 0])
     nat[3] = sceen.grav
 
     env(p1)
@@ -112,7 +114,7 @@ while running:
     else:
         p1.cont = 0
     if keys[pygame.K_LSHIFT]:
-       p1.dive()
+        p1.dive()
     if keys[pygame.K_q]:
         p1.moveLeft()
     if keys[pygame.K_d]:
@@ -120,7 +122,7 @@ while running:
 
     p1.varSpeed(nat, resistance, push, dt)
 
-    p1.move(p1.speed[0]*dt, p1.speed[1]*dt)
+    p1.move(p1.speed[0] * dt, p1.speed[1] * dt)
 
     resistance = 0
     push = [0, 0]
@@ -129,11 +131,11 @@ while running:
 
     # flip() the display to put your work on screen
     pygame.display.flip()
-    #print(f"x={p1.x}, y={p1.y}, vit={p1.speed}")
+    # print(f"x={p1.x}, y={p1.y}, vit={p1.speed}")
     # limits FPS to 60
     # dt is delta time in seconds since last frame, used for framerate-
     # independent physics.
     dt = clock.tick(60) / 1000
-    #print(f"speed = {speed}, x={player_pos.x}, y={player_pos.y}")
+    # print(f"speed = {speed}, x={player_pos.x}, y={player_pos.y}")
 
 pygame.quit()

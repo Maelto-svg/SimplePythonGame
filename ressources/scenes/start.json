@@ -1,7 +1,7 @@
 {
     "content": [
         {
-            "class": "Element",
+            "class": "element.Element",
             "sprite": "ressources/sprites/background1.jpg",
             "size": "full",
             "args": [
@@ -11,7 +11,7 @@
             "depth": 0
         },
         {
-            "class": "Platform",
+            "class": "Platform.Platform",
             "sprite": "ressources/sprites/placeholder.png",
             "size": "1280x50",
             "args": [
@@ -23,7 +23,7 @@
             "depth": 1
         },
         {
-            "class": "Platform",
+            "class": "Platform.Platform",
             "sprite": "ressources/sprites/placeholder.png",
             "size": "200x200",
             "args": [
@@ -35,7 +35,7 @@
             "depth": 1
         },
         {
-            "class": "Environnement",
+            "class": "environnement.Environnement",
             "sprite": "ressources/sprites/empty.png",
             "size": "full",
             "args": [
@@ -47,7 +47,7 @@
             "depth": 1
         },
         {
-            "class": "Player",
+            "class": "player.Player",
             "sprite": "ressources/sprites/resized_player.png",
             "size": "64x64",
             "args": [
