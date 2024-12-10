@@ -1,3 +1,5 @@
+import logging
+
 import numpy as np
 import pygame
 
@@ -5,7 +7,7 @@ from logger import Logger
 from scene import Scene
 
 # Setup logging
-logging = Logger.get_instance()
+logging = Logger.get_instance(level=logging.DEBUG)
 
 
 def Collision(ent):
