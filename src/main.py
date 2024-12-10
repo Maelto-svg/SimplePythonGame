@@ -1,7 +1,11 @@
 import numpy as np
 import pygame
 
+from logger import Logger
 from scene import Scene
+
+# Setup logging
+logging = Logger.get_instance()
 
 
 def Collision(ent):
@@ -9,6 +13,8 @@ def Collision(ent):
     temp_ground = False
     for p in sceen.plats:
         if ent.rect.colliderect(p):
+            logging.debug(f"Collision detected: {ent.rect} with {p.rect}")
+
             tab_ent = np.array(
                 [ent.rect.right, ent.rect.left, ent.rect.bottom, ent.rect.top]
             )
@@ -44,10 +50,12 @@ def Collision(ent):
         ent.speed[0] = 0
         ent.rect.left = max(0, ent.rect.left)
         ent.rect.right = min(width, ent.rect.right)
+        logging.debug(f"Player collided with horizontal boundary at: {ent.rect}")
     if ent.rect.bottom > height:
         ent.speed[1] = 0
         ent.rect.bottom = height
         ent.onGround = True
+        logging.debug(f"Player collided with vertical boundary at: {ent.rect}")
 
 
 def env(ent):
@@ -56,37 +64,40 @@ def env(ent):
     e = sceen.env[p]
     push = [push[i] + e.push[i] for i in range(len(push))]
     resistance += e.resist
+    logging.debug(
+        f"Environmental interaction: Push = {push}, Resistance = {resistance}"
+    )
 
 
 # pygame setup
 pygame.init()
 height, width = 720, 1080
-flags = pygame.FULLSCREEN | pygame.SCALED
+flags = pygame.FULLSCREEN | pygame.SCALED  # Unused
 screen = pygame.display.set_mode(
     (width, height),
 )
 clock = pygame.time.Clock()
 running = True
 dt = 0
+logging.info("Pygame initialised")
 
 # sceen setup
 sceen = Scene(width, height)
-
 sceen.load("ressources/scenes/start.json", 0)
 
 p1 = sceen.player
 
 # physics setup
-
 nat = np.array([0, 0, 0, 0])
 
 resistance = 1
 push = [1, 1]
 
+logging.info("Game ready")
 
+# Main game loop
 while running:
     # poll for events
-    # pygame.QUIT event means the user clicked X to close your window
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -126,11 +137,12 @@ while running:
 
     # flip() the display to put your work on screen
     pygame.display.flip()
-    # print(f"x={p1.x}, y={p1.y}, vit={p1.speed}")
+
+    # Print the current speed and position (for debugging)
+    logging.debug(f"Player speed: {p1.speed}, Position: {p1.rect.topleft}")
+
     # limits FPS to 60
-    # dt is delta time in seconds since last frame, used for framerate-
-    # independent physics.
     dt = clock.tick(60) / 1000
-    # print(f"speed = {speed}, x={player_pos.x}, y={player_pos.y}")
 
 pygame.quit()
+logging.critical("Game was terminated by User")
