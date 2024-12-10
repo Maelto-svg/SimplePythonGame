@@ -2,6 +2,10 @@ import sys
 
 from PIL import Image
 
+"""
+This class is deprecated and will likely removed in a future update
+"""
+
 
 def resize_image(input_image, output_image, width, height):
     # Open the image file
