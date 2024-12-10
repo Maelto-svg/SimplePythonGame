@@ -1,7 +1,7 @@
 [flake8]
 max-line-length = 128
 
-exclude =  
+exclude =
     .git,
     __pycache__,
     .venv,
@@ -11,10 +11,12 @@ exclude =
     # No code should be here
     ressources
 
-# Ignore specific error codes
+# Ignore specific error codes :
+# closing bracket does not match indentation of opening bracket's line
+# continuation line over-indented for hanging indent
 ignore =
-    E123 # closing bracket does not match indentation of opening bracket's line
-    E126 # continuation line over-indented for hanging indent
+    E123
+    E126
 
 # Same as Ignore but for specific files only, none for now
 per-file-ignores =

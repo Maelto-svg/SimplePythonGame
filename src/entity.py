@@ -1,5 +1,6 @@
-from element import Element
 import numpy as np
+
+from element import Element
 
 
 class Entity(Element):

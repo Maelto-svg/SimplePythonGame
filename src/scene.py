@@ -1,5 +1,6 @@
-import json
 import importlib
+import json
+
 import pygame
 
 
@@ -29,7 +30,7 @@ class Scene:
         return getattr(module, class_name)
 
     def load(self, file, entry):
-        with open(file, 'r') as f:
+        with open(file, "r") as f:
             data = json.load(f)
         content = sorted(data["content"], key=lambda x: x["depth"])
         self.elements = []

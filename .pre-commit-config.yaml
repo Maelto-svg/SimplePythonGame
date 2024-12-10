@@ -1,0 +1,25 @@
+repos:
+  # 1. Use Black for code formatting
+  - repo: https://github.com/psf/black
+    rev: 24.10.0 # Replace with the latest stable version
+    hooks:
+      - id: black
+
+  # 2. Use Flake8 for linting and checking code style
+  - repo: https://github.com/pycqa/flake8
+    rev: 7.1.1 # Replace with the latest stable version
+    hooks:
+      - id: flake8
+
+  # 3. Detect trailing whitespace and fix it
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0 # Replace with the latest stable version
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer # Ensure files end with a newline
+
+  # 5. Sort imports using isort
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2 # Replace with the latest stable version
+    hooks:
+      - id: isort

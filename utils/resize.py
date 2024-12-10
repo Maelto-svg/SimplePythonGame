@@ -1,5 +1,7 @@
 import sys
+
 from PIL import Image
+
 
 def resize_image(input_image, output_image, width, height):
     # Open the image file
@@ -10,9 +12,12 @@ def resize_image(input_image, output_image, width, height):
         resized_img.save(output_image)
         print(f"Image resized and saved as {output_image}")
 
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python resize_image.py <input_image> [<output_image>] [<width>] [<height>]")
+        print(
+            "Usage: python resize_image.py <input_image> [<output_image>] [<width>] [<height>]"
+        )
     else:
         input_image = sys.argv[1]
 

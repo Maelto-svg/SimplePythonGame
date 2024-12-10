@@ -1,5 +1,6 @@
-import pygame
 import numpy as np
+import pygame
+
 from scene import Scene
 
 
@@ -8,18 +9,10 @@ def Collision(ent):
     temp_ground = False
     for p in sceen.plats:
         if ent.rect.colliderect(p):
-            tab_ent = np.array([
-                    ent.rect.right,
-                    ent.rect.left,
-                    ent.rect.bottom,
-                    ent.rect.top
-                    ])
-            tab_plat = np.array([
-                    p.rect.left,
-                    p.rect.right,
-                    p.rect.top,
-                    p.rect.bottom
-                    ])
+            tab_ent = np.array(
+                [ent.rect.right, ent.rect.left, ent.rect.bottom, ent.rect.top]
+            )
+            tab_plat = np.array([p.rect.left, p.rect.right, p.rect.top, p.rect.bottom])
             over = (tab_ent - tab_plat) * np.array([1.0, -1.0, 1.0, -1.0])
             if ent.speed[0] >= 0:
                 over[1] = np.inf
@@ -69,7 +62,9 @@ def env(ent):
 pygame.init()
 height, width = 720, 1080
 flags = pygame.FULLSCREEN | pygame.SCALED
-screen = pygame.display.set_mode((width, height),)
+screen = pygame.display.set_mode(
+    (width, height),
+)
 clock = pygame.time.Clock()
 running = True
 dt = 0
