@@ -33,13 +33,15 @@ python main.py
 ## Development
 
 ### Code Quality
-Before submitting contributions, run static code analysis:
+You can run static code analysis using:
 ```bash
 flake8
 ```
 flake8 is installed when running ```pip install -r requirements.txt```.
 
 If flake8 was not installed run ```pip install flake8```
+
+Static code analysis will be run on commit via pre commit hooks.
 
 ## Requirements
 The `requirements.txt` file includes all necessary dependencies for the project, including:
