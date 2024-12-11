@@ -5,159 +5,172 @@ import pygame
 from logger import Logger
 from scene import Scene
 
-# Setup logging
-logging = Logger.get_instance(level=logging.DEBUG)
 
+class Game:
+    def __init__(self, width=1080, height=720):
+        # Setup logging
+        self.logging = Logger.get_instance(level=logging.DEBUG)
 
-def Collision(ent):
-    """
-    This is a function to detect if there is a collision between an entity and any other.
-    It will directly modify the speed and the position of the entity.
+        # Pygame setup
+        pygame.init()
+        self.width = width
+        self.height = height
+        self.screen = pygame.display.set_mode((self.width, self.height))
+        self.clock = pygame.time.Clock()
+        self.running = True
+        self.dt = 0
+        self.logging.info("Pygame initialised")
 
-    :param ent: the entity to test
-    :returns: nothing
-    """
-    global push, resistance
-    temp_ground = False
-    for p in sceen.plats:
-        if ent.rect.colliderect(p):
-            logging.debug(f"Collision detected: {ent.rect} with {p.rect}")
+        # Scene setup
+        self.scene = Scene(self.width, self.height)
+        self.scene.load("ressources/scenes/start.json", 0)
+        self.player = self.scene.player
 
-            tab_ent = np.array(
-                [ent.rect.right, ent.rect.left, ent.rect.bottom, ent.rect.top]
+        # Physics setup
+        self.nat = np.array([0, 0, 0, 0])
+        self.resistance = 1
+        self.push = [1, 1]
+
+        self.logging.info("Game ready")
+
+    def collision(self, ent):
+        """
+        This is a function to detect if there is a collision between an entity and any other.
+        It will directly modify the speed and the position of the entity.
+
+        :param ent: the entity to test
+        :returns: nothing
+        """
+        temp_ground = False
+        for p in self.scene.plats:
+            if ent.rect.colliderect(p):
+                self.logging.debug(f"Collision detected: {ent.rect} with {p.rect}")
+
+                tab_ent = np.array(
+                    [ent.rect.right, ent.rect.left, ent.rect.bottom, ent.rect.top]
+                )
+                tab_plat = np.array(
+                    [p.rect.left, p.rect.right, p.rect.top, p.rect.bottom]
+                )
+                over = (tab_ent - tab_plat) * np.array([1.0, -1.0, 1.0, -1.0])
+
+                if ent.speed[0] >= 0:
+                    over[1] = np.inf
+                else:
+                    over[0] = np.inf
+                if ent.speed[1] >= 0:
+                    over[3] = np.inf
+                else:
+                    over[2] = np.inf
+
+                bouncing_dir = np.argmin(over)
+
+                ent.speed[bouncing_dir // 2] = 0
+                if bouncing_dir == 0:
+                    ent.rect.right = p.rect.left
+                elif bouncing_dir == 1:
+                    ent.rect.left = p.rect.right
+                elif bouncing_dir == 2:
+                    ent.rect.bottom = p.rect.top
+                    self.push = [
+                        self.push[i] + p.push[i] for i in range(len(self.push))
+                    ]
+                    self.resistance += p.resist
+                elif bouncing_dir == 3:
+                    ent.rect.top = p.rect.bottom
+                temp_ground = bouncing_dir == 2 or temp_ground
+
+        ent.onGround = temp_ground
+
+        if ent.rect.left < 0 or ent.rect.right > self.width:
+            ent.speed[0] = 0
+            ent.rect.left = max(0, ent.rect.left)
+            ent.rect.right = min(self.width, ent.rect.right)
+            self.logging.debug(
+                f"Player collided with horizontal boundary at: {ent.rect}"
             )
-            tab_plat = np.array([p.rect.left, p.rect.right, p.rect.top, p.rect.bottom])
-            over = (tab_ent - tab_plat) * np.array([1.0, -1.0, 1.0, -1.0])
-            if ent.speed[0] >= 0:
-                over[1] = np.inf
+        if ent.rect.bottom > self.height:
+            ent.speed[1] = 0
+            ent.rect.bottom = self.height
+            ent.onGround = True
+            self.logging.debug(f"Player collided with vertical boundary at: {ent.rect}")
+
+    def env(self, ent):
+        """
+        This is a function to detect in which environnement an entity is.
+        It will directly modify the pushing power and the resistance.
+
+        :param ent: The entity to test
+        :returns: Nothing
+        """
+        p = ent.rect.collidelist(self.scene.env)
+        e = self.scene.env[p]
+        self.push = [self.push[i] + e.push[i] for i in range(len(self.push))]
+        self.resistance += e.resist
+        self.logging.debug(
+            f"Environmental interaction: Push = {self.push}, Resistance = {self.resistance}"
+        )
+
+    def main_loop(self):
+        """
+        The main game loop.
+        """
+        while self.running:
+            # Poll for events
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+
+            # Fill the screen with a color to wipe away anything from last frame
+            self.screen.fill("white")
+            for e in self.scene.elements:
+                self.screen.blit(e.sprite, e.rect)
+
+            self.player.direction = np.array([0.0, 0.0, 0.0, 0.0])
+
+            self.nat = np.array([0, 0, 0, 0])
+            self.nat[3] = self.scene.grav
+
+            self.env(self.player)
+
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_SPACE]:
+                self.player.jump()
             else:
-                over[0] = np.inf
-            if ent.speed[1] >= 0:
-                over[3] = np.inf
-            else:
-                over[2] = np.inf
+                self.player.cont = 0
+            if keys[pygame.K_LSHIFT]:
+                self.player.dive()
+            if keys[pygame.K_q]:
+                self.player.moveLeft()
+            if keys[pygame.K_d]:
+                self.player.moveRight()
 
-            bouncing_dir = np.argmin(over)
+            self.player.varSpeed(self.nat, self.resistance, self.push, self.dt)
 
-            ent.speed[bouncing_dir // 2] = 0
-            if bouncing_dir == 0:
-                ent.rect.right = p.rect.left
-            elif bouncing_dir == 1:
-                ent.rect.left = p.rect.right
-            elif bouncing_dir == 2:
-                ent.rect.bottom = p.rect.top
-                push = [push[i] + p.push[i] for i in range(len(push))]
-                resistance += p.resist
-            elif bouncing_dir == 3:
-                ent.rect.top = p.rect.bottom
-            temp_ground = bouncing_dir == 2 or temp_ground
+            self.player.move(
+                self.player.speed[0] * self.dt, self.player.speed[1] * self.dt
+            )
 
-    ent.onGround = temp_ground
+            self.resistance = 0
+            self.push = [0, 0]
 
-    if ent.rect.left < 0 or ent.rect.right > width:
-        ent.speed[0] = 0
-        ent.rect.left = max(0, ent.rect.left)
-        ent.rect.right = min(width, ent.rect.right)
-        logging.debug(f"Player collided with horizontal boundary at: {ent.rect}")
-    if ent.rect.bottom > height:
-        ent.speed[1] = 0
-        ent.rect.bottom = height
-        ent.onGround = True
-        logging.debug(f"Player collided with vertical boundary at: {ent.rect}")
+            self.collision(self.player)
 
+            # Flip the display to put your work on screen
+            pygame.display.flip()
 
-def env(ent):
-    """
-    This is a function to detect in which environnement an entity is.
-    It will directly modify the pushing power and the resistance.
+            # Print the current speed and position (for debugging)
+            self.logging.debug(
+                f"Player speed: {self.player.speed}, Position: {self.player.rect.topleft}"
+            )
 
-    :param ent: the entity to test
-    :returns: nothing
-    """
-    global push, resistance
-    p = ent.rect.collidelist(sceen.env)
-    e = sceen.env[p]
-    push = [push[i] + e.push[i] for i in range(len(push))]
-    resistance += e.resist
-    logging.debug(
-        f"Environnemental interaction: Push = {push}, Resistance = {resistance}"
-    )
+            # Limits FPS to 60
+            self.dt = self.clock.tick(60) / 1000
+
+        pygame.quit()
+        self.logging.critical("Game was terminated by User")
 
 
-# pygame setup
-pygame.init()
-height, width = 720, 1080
-flags = pygame.FULLSCREEN | pygame.SCALED  # Unused
-screen = pygame.display.set_mode(
-    (width, height),
-)
-clock = pygame.time.Clock()
-running = True
-dt = 0
-logging.info("Pygame initialised")
-
-# sceen setup
-sceen = Scene(width, height)
-sceen.load("ressources/scenes/start.json", 0)
-
-p1 = sceen.player
-
-# physics setup
-nat = np.array([0, 0, 0, 0])
-
-resistance = 1
-push = [1, 1]
-
-logging.info("Game ready")
-
-# Main game loop
-while running:
-    # poll for events
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    # fill the screen with a color to wipe away anything from last frame
-    screen.fill("white")
-    for e in sceen.elements:
-        screen.blit(e.sprite, e.rect)
-
-    p1.direction = np.array([0.0, 0.0, 0.0, 0.0])
-
-    nat = np.array([0, 0, 0, 0])
-    nat[3] = sceen.grav
-
-    env(p1)
-
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_SPACE]:
-        p1.jump()
-    else:
-        p1.cont = 0
-    if keys[pygame.K_LSHIFT]:
-        p1.dive()
-    if keys[pygame.K_q]:
-        p1.moveLeft()
-    if keys[pygame.K_d]:
-        p1.moveRight()
-
-    p1.varSpeed(nat, resistance, push, dt)
-
-    p1.move(p1.speed[0] * dt, p1.speed[1] * dt)
-
-    resistance = 0
-    push = [0, 0]
-
-    Collision(p1)
-
-    # flip() the display to put your work on screen
-    pygame.display.flip()
-
-    # Print the current speed and position (for debugging)
-    logging.debug(f"Player speed: {p1.speed}, Position: {p1.rect.topleft}")
-
-    # limits FPS to 60
-    dt = clock.tick(60) / 1000
-
-pygame.quit()
-logging.critical("Game was terminated by User")
+if __name__ == "__main__":
+    game = Game()
+    game.main_loop()
