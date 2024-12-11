@@ -34,7 +34,7 @@ class Element:
         This function flips the element sprite.
 
         :param Hor: whether or not flipping the sprite horizontally.
-        :parma Ver: whether or not flipping the sprite vertically.
+        :param Vert: whether or not flipping the sprite vertically.
         :returns: Nothing the function rotate the sprite directly.
         """
         self.sprite = pygame.transform.flip(self.sprite, Hor, Vert)
