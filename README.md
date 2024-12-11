@@ -6,6 +6,8 @@ This is an ongoing 2D game development project in Python. The game is currently 
 ## Prerequisites
 - Python 3.8+ recommended
 - pip (Python package installer)
+- Sphinx (for documentation generation)
+- Make
 
 ## Setup and Installation
 
@@ -30,6 +32,23 @@ pip install -r requirements.txt
 python main.py
 ```
 
+## Documentation Generation
+
+### Prerequisites for Documentation
+Ensure you have Sphinx and Make installed:
+```bash
+pip install sphinx
+```
+
+### Generating Documentation
+Navigate to the `/docs` folder and run:
+```bash
+cd docs
+make html
+```
+
+The generated documentation will be available in the `docs/_build/html` directory. Open `index.html` in your web browser to view the documentation.
+
 ## Development
 
 ### Code Quality
@@ -47,10 +66,12 @@ Static code analysis will be run on commit via pre commit hooks.
 The `requirements.txt` file includes all necessary dependencies for the project, including:
 - Game development libraries
 - Code analysis tools
+- Documentation generation tools
 - Testing frameworks
 
 ### Key Dependencies
 - `flake8`: Static code analysis tool
+- `sphinx`: Documentation generation tool
 - Other game-specific libraries (to be specified based on project needs)
 
 ## Contributing
@@ -58,7 +79,8 @@ The `requirements.txt` file includes all necessary dependencies for the project,
 2. Create a virtual environment
 3. Install dependencies
 4. Run `flake8` to ensure code quality
-5. Submit a pull request
+5. Update documentation as needed
+6. Submit a pull request
 
 ## Current Status
 :construction: **Project Under Active Development** :construction:
