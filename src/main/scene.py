@@ -2,7 +2,6 @@ import importlib
 import json
 
 import pygame
-
 from logger import Logger
 
 

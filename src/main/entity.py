@@ -1,11 +1,10 @@
 import numpy as np
-
 from element import Element
 from logger import Logger
 
 
 class Entity(Element):
-    mask = np.array([[-1, 0], [1, 0], [0, -1], [0, 1]])
+    mask = np.array([[-1, 0], [1, 0], [0, -1], [0, 1]], dtype=float)
 
     def __init__(self, x, y, sprite, speed, acc):
         super().__init__(x, y, sprite)
@@ -38,7 +37,8 @@ class Entity(Element):
                 self.logging.info("Entity flipped due to orientation change")
         except Exception as e:
             self.logging.error(f"Error in varSpeed: {e}", "reseting speed to 0")
-            self.speed[0], self.speed[1] = 0
+            self.speed[0] = 0
+            self.speed[1] = 0
 
     def moveLeft(self):
         pass

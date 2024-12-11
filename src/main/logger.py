@@ -22,7 +22,9 @@ class Logger:
     @classmethod
     def _initialize_log_directory(cls):
         """Initialize the log directory based on the current date and time."""
-        base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../logs"))
+        base_path = os.path.abspath(
+            os.path.join(os.path.dirname(__file__), "../../logs")
+        )
         current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         cls._log_dir = os.path.join(base_path, current_time)
 

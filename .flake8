@@ -20,7 +20,7 @@ ignore =
 
 # Same as Ignore but for specific files only, none for now
 per-file-ignores =
-
+    src/test/testEntity.py: E402
 
 filename =
     *.py
