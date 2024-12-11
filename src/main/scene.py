@@ -6,19 +6,37 @@ from logger import Logger
 
 
 class Scene:
-    def __init__(self, width, height):
-        self.elements = []
-        self.grav = 0
-        self.player = None
-        self.plats = None
-        self.env = None  # Added to store environment elements
+    """
+    This class represent the collection of elements that need to be displayed at any given time.
+    """
+
+    def __init__(self, width: int, height: int):  # TODO Make it a singleton ?
+        """
+        Function to initialize a Scene object, it should only be run once.
+
+        :param width: The width in pixel the scene needs to occupy.
+        :param height: The height in pixel the scene needs to occupy.
+        :returns: a new scene.
+        """
+        self.elements = []  # List of all element present
+        self.grav = 0  # Gravity
+        self.player = None  # The player object
+        self.plats = None  # All the platforms in the scene
+        self.env = None  # All the environnement in the scene
         self.width = width
         self.height = height
         self.logging = Logger.get_instance()
         self.logging.info(f"Scene created with dimensions {width}x{height}")
 
-    def resize(self, sprite, size):
-        """Resize a sprite to specified dimensions."""
+    def resize(self, sprite: pygame.surface.Surface, size: str):
+        """
+        Resize a sprite to specified dimensions.
+
+        :param sprite: The sprite to resize.
+        :param size: The size to which the sprite needs to be resized.
+        Format "widthxheight", or "full" if the element needs to occupy the entire scene.
+        :returns: The resized sprite using pygame.transform.scale.
+        """
         if size == "full":
             dim = [self.width, self.height]
         else:
@@ -32,9 +50,13 @@ class Scene:
         return resized_sprite
 
     # TODO Move it somewhere else
-    def load_class(self, class_name, module_name):
+    def load_class(self, class_name: str, module_name: str):
         """
         Dynamically loads a class from a given module.
+
+        :param class_name: The name of the class to load.
+        :param module_name: The name of the module in which the class is located.
+        :returns: Nothing, it simply loads a class
         """
         try:
             module = importlib.import_module(module_name)
@@ -50,9 +72,14 @@ class Scene:
             )
             raise
 
-    def load(self, file, entry):
+    def load(self, file: str, entry: int):
         """
-        Load scene data from a JSON file and initialize elements.
+        Load scene data from a JSON file following a specific format and initialize the elements.
+
+        :param file: The JSON file to load.
+        :param entry: From which entry points did we access this new scene.
+        For instance did we load from the "next" scene or the "previous" one.
+        :returns: Nothing it updates all the elements fields in the scene object.
         """
         try:
             with open(file, "r") as f:
@@ -108,7 +135,7 @@ class Scene:
         self.logging.info(f"Initialized {len(self.plats)} Platform objects")
 
         self.env = [e for e in self.elements if e.__class__.__name__ == "Environnement"]
-        self.logging.info(f"Initialized {len(self.env)} Environment objects")
+        self.logging.info(f"Initialized {len(self.env)} Environnement objects")
 
         self.grav = data.get("grav", 0)
         self.logging.info(f"Gravity set to {self.grav}")

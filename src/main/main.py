@@ -10,6 +10,13 @@ logging = Logger.get_instance(level=logging.DEBUG)
 
 
 def Collision(ent):
+    """
+    This is a function to detect if there is a collision between an entity and any other.
+    It will directly modify the speed and the position of the entity.
+
+    :param ent: the entity to test
+    :returns: nothing
+    """
     global push, resistance
     temp_ground = False
     for p in sceen.plats:
@@ -60,13 +67,20 @@ def Collision(ent):
 
 
 def env(ent):
+    """
+    This is a function to detect in which environnement an entity is.
+    It will directly modify the pushing power and the resistance.
+
+    :param ent: the entity to test
+    :returns: nothing
+    """
     global push, resistance
     p = ent.rect.collidelist(sceen.env)
     e = sceen.env[p]
     push = [push[i] + e.push[i] for i in range(len(push))]
     resistance += e.resist
     logging.debug(
-        f"Environmental interaction: Push = {push}, Resistance = {resistance}"
+        f"Environnemental interaction: Push = {push}, Resistance = {resistance}"
     )
 
 
