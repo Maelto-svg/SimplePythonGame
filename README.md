@@ -52,6 +52,8 @@ The generated documentation will be available in the `docs/_build/html` director
 ## Development
 
 ### Code Quality
+
+#### Static analysis
 You can run static code analysis using:
 ```bash
 flake8
@@ -60,7 +62,18 @@ flake8 is installed when running ```pip install -r requirements.txt```.
 
 If flake8 was not installed run ```pip install flake8```
 
-Static code analysis will be run on commit via pre commit hooks.
+#### Pre commit hooks
+
+Static code analysis can be run on commit via pre commit hooks.
+
+To activate them run
+```bash
+pre-commit install
+```
+
+pre-commit is installed when running ```pip install -r requirements.txt```.
+
+If pre-commit was not installed run ```pip install pre-commit```
 
 ## Requirements
 The `requirements.txt` file includes all necessary dependencies for the project, including:
