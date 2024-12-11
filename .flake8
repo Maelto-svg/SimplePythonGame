@@ -18,7 +18,7 @@ ignore =
     E123
     E126
 
-# Same as Ignore but for specific files only, none for now
+# Same as Ignore but for specific files only
 per-file-ignores =
     src/test/testEntity.py: E402
 
