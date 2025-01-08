@@ -26,7 +26,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Run tests
-        run: python -m unittest discover -s src/test
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          python -m unittest discover -s src/test
 
   lint:
     runs-on: ubuntu-latest
@@ -57,14 +60,21 @@ jobs:
             $(cat CHANGELOG.md)
           artifacts: "dist/*"
 
-  docs:
-    if: github.ref == 'refs/heads/master'
+docs:
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Install dependencies
-        run: pip install mkdocs
-      - name: Build and Deploy Docs
         run: |
-          mkdocs build
-          mkdocs gh-deploy --force
+          pip install sphinx
+          # Install any additional dependencies required for documentation
+      - name: Build Documentation
+        run: |
+          cd docs
+          make html
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/_build/html
