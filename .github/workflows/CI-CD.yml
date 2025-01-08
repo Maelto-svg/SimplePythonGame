@@ -80,4 +80,6 @@ jobs:
           restore-keys: |
             mkdocs-material-
       - run: pip install mkdocs-material 
+      - name: Build the documentation
+      - run: mkdocs build  
       - run: mkdocs gh-deploy --force
