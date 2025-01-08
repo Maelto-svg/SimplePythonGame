@@ -41,10 +41,9 @@ pip install sphinx
 ```
 
 ### Generating Documentation
-Navigate to the `/docs` folder and run:
+Run:
 ```bash
-cd docs
-make html
+mkdocs build
 ```
 
 The generated documentation will be available in the `docs/_build/html` directory. Open `index.html` in your web browser to view the documentation.
@@ -85,7 +84,7 @@ The `requirements.txt` file includes all necessary dependencies for the project,
 ### Key Dependencies
 - `flake8`: Static code analysis tool
 - `sphinx`: Documentation generation tool
-- Other game-specific libraries (to be specified based on project needs)
+- Other game-specific libraries (to be specified in the future based on project needs)
 
 ## Contributing
 1. Fork the repository
