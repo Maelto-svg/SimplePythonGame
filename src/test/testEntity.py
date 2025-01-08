@@ -5,9 +5,10 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 
-sys.path.append(
-    "c:\\Users\\pc lenovo\\Documents\\Projet_Personel\\Programme perso\\Game\\src\\main"
-)
+script_path = os.path.abspath(__file__)
+parent_directory = os.path.join(script_path, "../../main")
+
+sys.path.append(os.path.abspath(parent_directory))
 
 from entity import Entity
 
