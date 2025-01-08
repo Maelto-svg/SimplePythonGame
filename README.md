@@ -41,12 +41,15 @@ pip install sphinx
 ```
 
 ### Generating Documentation
-Run:
+Navigate to the `/docs` folder and run:
 ```bash
-mkdocs build
+cd docs
+make html
 ```
 
 The generated documentation will be available in the `docs/_build/html` directory. Open `index.html` in your web browser to view the documentation.
+
+Or access the static version at https://maelto-svg.github.io/SimplePythonGame/
 
 ## Development
 
