@@ -50,15 +50,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Generate Changelog
+        id: changelog
         run: |
-          git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"- %s" > CHANGELOG.md
+          changelog=$(git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"- %s")
+          echo "changelog=$changelog" >> $GITHUB_ENV
       - name: Create Release
         uses: ncipollo/release-action@v1
         with:
           tag: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
-          body: |
-            $(cat CHANGELOG.md)
+          body: ${{ env.changelog }}
           artifacts: "dist/*"
 
   docs:
